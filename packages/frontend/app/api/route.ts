@@ -1,14 +1,8 @@
-// Two very important environment variables to set that you MUST set in Vercel:
-// - SYNDICATE_FRAME_API_KEY: The API key that you received for frame.syndicate.io.
-// DM @Will on Farcaster/@WillPapper on Twitter to get an API key.
 import { NextRequest } from "next/server";
 
-const baseUrl = 'https://wordchain-rust.vercel.app/'
+const baseUrl = 'https://wordchain-v2.vercel.app/'
 
 export async function GET(req: NextRequest) {
-  // If the request is not a POST, we know that we're not dealing with a
-  // Farcaster Frame button click. Therefore, we should send the Farcaster Frame
-  // content
   return new Response(`<!DOCTYPE html>
   <html>
     <head>
@@ -40,47 +34,49 @@ export async function GET(req: NextRequest) {
   })
 }
 
+interface SyndicateSendTransactionResponse {
+  success: boolean
+  data: {
+    transactionId: string
+    userAddress: string
+  }
+}
+
+const contractAddress = '0xe20852fc222ef9b5896414c199fcb921144de3d8'
+const functionSignature = 'mint(address to, string message)'
+
 export async function POST(req: NextRequest) {
   try {
       const body = await req.json();
-      console.log("Received POST request from Farcaster Frame button click");
-      console.log("Farcaster Frame request body:", body);
-      console.log("Farcaster Frame trusted data:", body.trustedData);
-      console.log(
-        "Farcaster Frame trusted data messageBytes:",
-        body.trustedData.messageBytes
-      );
-
-      // Once your contract is registered, you can mint an NFT using the following code
-      const syndicateRes = await fetch("https://staging-frame.syndicate.io/api/v2/sendTransaction", {
+      // https://frame.syndicate.io/#sendTransaction
+      const syndicateRes = await fetch("https://frame.syndicate.io/api/v2/sendTransaction", {
         method: "POST",
         headers: {
           "content-type": "application/json",
-          Authorization: "Bearer " + process.env.SYNDICATE_FRAME_API_KEY,
+          // View the docs to get your own API key
+          // https://frame.syndicate.io/#createApiKey
+          Authorization: "Bearer " + process.env.SYNDICATE_API_KEY,
         },
         body: JSON.stringify({
+          contractAddress,
+          functionSignature,
           frameTrustedData: body.trustedData.messageBytes,
-          contractAddress: '0xe20852fc222ef9b5896414c199fcb921144de3d8',
-          functionSignature: 'mint(address to, string message)',
           args: {
+            // {frame-user} will be mapped to the user's address who interacted with the frame
             to: "{frame-user}",
             message: body.untrustedData.inputText
           },
         }),
       });
 
-      console.log("Syndicate response:", syndicateRes);
       if (!syndicateRes.ok) {
-        console.log("Syndicate response not ok");
         const reason = await syndicateRes.text();
-        console.log("Syndicate error reason:", reason);
+        console.error("Syndicate response not ok:", reason);
         throw new Error("Syndicate response not ok");
       }
-      const json = await syndicateRes.json();
-      console.log("Syndicate response JSON:", json);
+      const { data: { transactionId } } = (await syndicateRes.json()) as SyndicateSendTransactionResponse;
+      console.log("Syndicate transaction ID:", transactionId);
       
-      console.log("Sending confirmation as Farcaster Frame response");
-
       return new Response(`<!DOCTYPE html>
         <html>
           <head>
