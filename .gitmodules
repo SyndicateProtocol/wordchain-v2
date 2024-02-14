@@ -1,0 +1,9 @@
+[submodule "packages/chain/lib/openzeppelin-contracts"]
+	path = packages/chain/lib/openzeppelin-contracts
+	url = https://github.com/OpenZeppelin/openzeppelin-contracts
+[submodule "packages/chain/lib/solmate"]
+	path = packages/chain/lib/solmate
+	url = https://github.com/transmissions11/solmate
+[submodule "packages/chain/lib/forge-std"]
+	path = packages/chain/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std
