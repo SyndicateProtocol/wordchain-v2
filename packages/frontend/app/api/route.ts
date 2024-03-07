@@ -48,6 +48,7 @@ const functionSignature = 'mint(address to, string message)'
 export async function POST(req: NextRequest) {
   try {
       const body = await req.json();
+      console.log("Received body:", JSON.stringify(body, null, 2));
       // https://frame.syndicate.io/#sendTransaction
       const syndicateRes = await fetch("https://frame.syndicate.io/api/v2/sendTransaction", {
         method: "POST",

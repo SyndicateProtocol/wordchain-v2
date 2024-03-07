@@ -108,11 +108,13 @@ contract Wordchain is ERC721, Ownable {
         authorizedMinters[0xF43A72c1a41b7361728C83699f69b5280161F0A5] = true;
         authorizedMinters[0x94702712BA81C0D065665B8b0312D87B190EbA37] = true;
         authorizedMinters[0x10FD71C6a3eF8F75d65ab9F3d77c364C321Faeb5] = true;
+        authorizedMinters[0x9fF962fAAb91D35262CD175741110b9BebC2Ee81] = true;
 
         emit AuthorizedMinterSet(0x3D0263e0101DE2E9070737Df30236867485A5208, true);
         emit AuthorizedMinterSet(0x98407Cb54D8dc219d8BF04C9018B512dDbB96caB, true);
         emit AuthorizedMinterSet(0xF43A72c1a41b7361728C83699f69b5280161F0A5, true);
         emit AuthorizedMinterSet(0x94702712BA81C0D065665B8b0312D87B190EbA37, true);
         emit AuthorizedMinterSet(0x10FD71C6a3eF8F75d65ab9F3d77c364C321Faeb5, true);
+        emit AuthorizedMinterSet(0x9fF962fAAb91D35262CD175741110b9BebC2Ee81, true);
     }
 }
